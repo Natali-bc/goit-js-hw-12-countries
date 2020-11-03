@@ -22,6 +22,15 @@ const inputFunction = function () {
     .then(data => data.json())
     .then(data => {
       countryUl.innerHTML = '';
+      if (data.length > 10) {
+        const errNotice2 = error({
+          title: 'Too many matches found',
+          text: 'Please try again',
+          delay: 2000,
+          modules: new Map([...defaultModules, [PNotifyDesktop, {}]]),
+        });
+        return;
+      }
       data.forEach(element => {
         if (data.length === 1) {
           resultSearch.innerHTML = '';
@@ -39,12 +48,13 @@ const inputFunction = function () {
       </ul>
       `,
           );
-          localStorage.setItem('countryDiv', resultSearch.innerHTML);
+
           element.languages.forEach(({ name }) => {
             document
               .querySelector('.languages-list')
               .insertAdjacentHTML('beforeend', `<li>${name}</li>`);
           });
+          localStorage.setItem('countryDiv', resultSearch.innerHTML);
         }
         if (data.length > 1 && data.length < 10) {
           countryUl.insertAdjacentHTML(
@@ -69,22 +79,14 @@ const inputFunction = function () {
          </ul>
          `,
               );
-              localStorage.setItem('countryDiv', resultSearch.innerHTML);
+
               element.languages.forEach(({ name }) => {
                 document
                   .querySelector('.languages-list')
                   .insertAdjacentHTML('beforeend', `<li>${name}</li>`);
               });
+              localStorage.setItem('countryDiv', resultSearch.innerHTML);
             });
-        }
-        if (data.length > 10) {
-          const errNotice2 = error({
-            title: 'Too many matches found',
-            text: 'Please try again',
-            delay: 2000,
-            modules: new Map([...defaultModules, [PNotifyDesktop, {}]]),
-          });
-          return;
         }
       });
     })
